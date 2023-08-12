@@ -26,11 +26,11 @@ public class Manager : MonoBehaviour, IOnEventCallback
     [HideInInspector] public Transform discard;
     Transform gameboard;
 
-    public List<Player> playerordergameobject = new List<Player>();
-    public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
+    [HideInInspector] public List<Player> playerordergameobject = new List<Player>();
+    [HideInInspector] public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
 
-    public float opacity = 1;
-    public bool decrease = true;
+    [HideInInspector] public float opacity = 1;
+    [HideInInspector] public bool decrease = true;
     public bool gameon = false;
 
     public const byte AddNextPlayerEvent = 1;

@@ -12,6 +12,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     public TMP_InputField join;
     public TMP_InputField username;
     public TMP_Text error;
+    public Toggle fullScreen;
 
     private void Start()
     {
@@ -20,7 +21,13 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
         {
             username.text = PlayerPrefs.GetString("Username");
         }
+        fullScreen.isOn = Screen.fullScreen;
+        fullScreen.onValueChanged.AddListener(delegate { WindowMode(); });
+    }
 
+    public void WindowMode()
+    {
+        Screen.fullScreenMode = (fullScreen.isOn) ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
     }
 
     IEnumerator ErrorMessage(string x)

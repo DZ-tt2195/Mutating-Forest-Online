@@ -6,10 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class ConnectToLobby : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "usw";
+        Application.targetFrameRate = 60;
+    }
+
+    public void Join(string region)
+    {
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region;
         PhotonNetwork.ConnectUsingSettings();
         PlayerPrefs.SetString("Username", "");
     }
