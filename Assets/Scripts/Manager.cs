@@ -8,30 +8,31 @@ using System;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine.UI;
+using MyBox;
 
 public class Manager : MonoBehaviour, IOnEventCallback
 {
     public static Manager instance;
     public TileData tileclone;
-    public PlayerButton playerbuttonclone;
-    public Image blownUp;
-    public Transform cardsplayedgrid;
-    public List<Pawn> listofpawns = new List<Pawn>();
-    [HideInInspector] public List<TileData> listoftiles = new List<TileData>();
+    [SerializeField] PlayerButton playerbuttonclone;
+    [SerializeField] internal Image blownUp;
+    [SerializeField] internal Transform cardsplayedgrid;
+    [SerializeField] List<Pawn> listofpawns = new List<Pawn>();
+    [ReadOnly] public List<TileData> listoftiles = new List<TileData>();
 
-    [HideInInspector] public TMP_Text instructions;
-    [HideInInspector] public TMP_Text numbers;
-    [HideInInspector] public Transform cardback;
-    [HideInInspector] public Transform deck;
-    [HideInInspector] public Transform discard;
+    [ReadOnly] public TMP_Text instructions;
+    [ReadOnly] public TMP_Text numbers;
+    [ReadOnly]  Transform cardback;
+    [ReadOnly] public Transform deck;
+    [ReadOnly] public Transform discard;
     Transform gameboard;
 
-    [HideInInspector] public List<Player> playerordergameobject = new List<Player>();
-    [HideInInspector] public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
+    [ReadOnly] public List<Player> playerordergameobject = new List<Player>();
+    [ReadOnly] public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
 
-    [HideInInspector] public float opacity = 1;
-    [HideInInspector] public bool decrease = true;
-    public bool gameon = false;
+    [ReadOnly] public float opacity = 1;
+    [ReadOnly] public bool decrease = true;
+    [ReadOnly] public bool gameon = false;
 
     public const byte AddNextPlayerEvent = 1;
     public const byte GameOverEvent = 2;
@@ -117,7 +118,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
 
     IEnumerator WaitForPlayer()
     {
-        GameObject x = GameObject.Find("Store Players").gameObject;
+        GameObject x = GameObject.Find("Store Players");
         while (x.transform.childCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             instructions.text = $"Waiting for more players ({PhotonNetwork.PlayerList.Length}/{PhotonNetwork.CurrentRoom.MaxPlayers})";
@@ -131,11 +132,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
         {
             deck.Shuffle();
 
-            List<int> startingpositions = new List<int>();
-            startingpositions.Add(0);
-            startingpositions.Add(4);
-            startingpositions.Add(40);
-            startingpositions.Add(44);
+            List<int> startingpositions = new() { 0,4,40,44};
 
             List<Photon.Realtime.Player> playerassignment = new List<Photon.Realtime.Player>();
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
@@ -191,8 +188,8 @@ public class Manager : MonoBehaviour, IOnEventCallback
             playerordergameobject[playerposition].position = playerposition;
             playerordergameobject[playerposition].photonrealtime = playername;
 
-            PlayerButton playerbutton = Instantiate(playerbuttonclone, GameObject.Find("CanvasObject").transform);
-            playerbutton.transform.localPosition = new Vector3(-810, 290-30*playerposition, 0);
+            PlayerButton playerbutton = Instantiate(playerbuttonclone, GameObject.Find("Canvas").transform);
+            playerbutton.transform.localPosition = new Vector3(-1100, 425-50*playerposition, 0);
             playerbutton.name = $"{playername.NickName}'s Button";
             playerbutton.image.color = listofpawns[playerposition].image.color;
             playerbutton.Setup(listofpawns[playerposition]);

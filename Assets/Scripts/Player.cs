@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
+using MyBox;
 
 public class Player : MonoBehaviourPunCallbacks
 {
@@ -18,25 +19,25 @@ public class Player : MonoBehaviourPunCallbacks
     [HideInInspector] public Transform choicehand;
     PlayerButton playerbutton;
 
-    public Pawn pawn;
-    public int position;
-    public Photon.Realtime.Player photonrealtime;
+    [ReadOnly] public Pawn pawn;
+    [ReadOnly] public int position;
+    [ReadOnly] public Photon.Realtime.Player photonrealtime;
 
-    [HideInInspector] public string choice;
-    [HideInInspector] public Card chosencard;
-    [HideInInspector] public TileData chosentile;
+    [ReadOnly] public string choice;
+    [ReadOnly] public Card chosencard;
+    [ReadOnly] public TileData chosentile;
     enum TypeOfCard { None, Any, Paths, Explorers };
 
     SendChoice endturnbutton;
-    public bool druid = false;
-    public bool enchanted = false;
-    public bool waiting = false;
-    bool turnon = false;
-    public bool hermit = false;
+    [ReadOnly] public bool druid = false;
+    [ReadOnly] public bool enchanted = false;
+    [ReadOnly] public bool waiting = false;
+    [ReadOnly] bool turnon = false;
+    [ReadOnly] public bool hermit = false;
     bool didnothing;
 
-    public int plays;
-    public int moves;
+    [ReadOnly] public int plays;
+    [ReadOnly] public int moves;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +47,7 @@ public class Player : MonoBehaviourPunCallbacks
 
         hand = this.transform.GetChild(0).transform;
         hand.transform.localPosition = new Vector2(0, -280);
-        hand.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        hand.transform.localScale = new Vector3(1, 1, 1);
         this.transform.GetChild(1).transform.localPosition = new Vector3(0, -520, 0);
 
         pv = GetComponent<PhotonView>();
@@ -68,7 +69,7 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public IEnumerator ClearGrid()
     {
-        List<GameObject> list = new List<GameObject>();
+        List<GameObject> list = new();
         while (Manager.instance.cardsplayedgrid.childCount > 0)
         {
             yield return new WaitForSeconds(0.05f);
@@ -268,7 +269,6 @@ public class Player : MonoBehaviourPunCallbacks
                 {
                     didnothing = true;
                     endturnbutton.DisableButton();
-                    continueturn = false;
                     break;
                 }
                 else if (choice == "No")

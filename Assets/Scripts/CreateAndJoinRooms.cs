@@ -15,7 +15,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     public Toggle fullScreen;
 
     private void Start()
-    {
+    {        
         error.gameObject.SetActive(false);
         if (PlayerPrefs.GetString("Username") != "")
         {
