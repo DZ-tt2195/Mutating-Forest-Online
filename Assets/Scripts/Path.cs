@@ -28,9 +28,9 @@ public class Path : Card
     [SerializeField] public bool exitup;
     [SerializeField] public bool exitdown;
 
-    private void Awake()
+    private void Start()
     {
-        this.myType = CardType.Explorer;
+        this.myType = CardType.Path;
 
         enterleft = enternormal[0];
         enterright = enternormal[1];

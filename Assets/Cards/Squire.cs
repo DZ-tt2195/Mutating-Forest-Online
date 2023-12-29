@@ -16,12 +16,11 @@ public class Squire : Explorer
     public override IEnumerator PlayThis(Player player)
     {
         bool explorerinhand = false;
-        for (int i = 0; i < player.hand.childCount; i++)
+        foreach (Card card in player.cardsInHand)
         {
-            SendChoice ct = player.hand.GetChild(i).GetComponent<SendChoice>();
-            if (ct.card.myType == CardType.Explorer)
+            if (card.myType == CardType.Explorer)
             {
-                ct.EnableButton(player);
+                card.choicescript.EnableButton(player);
                 explorerinhand = true;
             }
         }
@@ -38,8 +37,9 @@ public class Squire : Explorer
                 yield return null;
 
             Destroy(x.gameObject);
-            for (int i = 0; i < player.hand.childCount; i++)
-                player.hand.GetChild(i).GetComponent<SendChoice>().DisableButton();
+
+            foreach (Card card in player.cardsInHand)
+                card.choicescript.DisableButton();
             player.choicetext.transform.parent.gameObject.SetActive(false);
 
             if (player.chosencard != null)

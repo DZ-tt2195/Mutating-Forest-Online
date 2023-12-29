@@ -20,7 +20,7 @@ public class SendChoice : MonoBehaviour
         chosentile = this.GetComponent<TileData>();
         button.onClick.AddListener(SendName);
         if (card != null || chosentile != null)
-            border = this.transform.GetChild(0).GetComponent<Image>();
+            border = this.transform.Find("Border").GetComponent<Image>();
     }
 
     private void FixedUpdate()

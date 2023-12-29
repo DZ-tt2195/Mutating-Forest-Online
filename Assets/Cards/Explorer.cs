@@ -12,9 +12,9 @@ public class Explorer : Card
     private void Start()
     {
         myType = CardType.Explorer;
-        cardName = transform.Find("Name").GetComponent<TMP_Text>();
-        cardText = transform.Find("Description").GetComponent<TMP_Text>();
-        cardArtist = transform.Find("Artist").GetComponent<TMP_Text>();
+        cardName = this.transform.GetChild(2).GetComponent<TMP_Text>();
+        cardText = this.transform.GetChild(3).GetComponent<TMP_Text>();
+        cardArtist = this.transform.GetChild(4).GetComponent<TMP_Text>();
         GetText();
     }
 

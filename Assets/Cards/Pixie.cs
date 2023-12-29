@@ -25,11 +25,12 @@ public class Pixie : Explorer
 
     bool NoExplorers(Player player)
     {
-        for (int i = 0; i < player.hand.childCount; i++)
+        foreach (Card card in player.cardsInHand)
         {
-            if (player.hand.transform.GetChild(i).GetComponent<Card>().myType == CardType.Explorer)
+            if (card.myType == CardType.Explorer)
                 return false;
         }
+
         return true;
     }
 }

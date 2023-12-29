@@ -20,13 +20,13 @@ public class Adventurer : Explorer
         for (int k = 0; k < 2; k++)
         {
             bool pathinhand = false;
-            for (int i = 0; i < player.hand.childCount; i++)
+
+            foreach (Card card in player.cardsInHand)
             {
-                SendChoice ct = player.hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.myType == CardType.Path)
+                if (card.myType == CardType.Path)
                 {
-                    ct.EnableButton(player);
                     pathinhand = true;
+                    card.choicescript.EnableButton(player);
                 }
             }
 
@@ -42,8 +42,8 @@ public class Adventurer : Explorer
                     yield return null;
 
                 Destroy(x.gameObject);
-                for (int i = 0; i < player.hand.childCount; i++)
-                    player.hand.GetChild(i).GetComponent<SendChoice>().DisableButton();
+                foreach (Card card in player.cardsInHand)
+                    card.choicescript.DisableButton();
                 player.choicetext.transform.parent.gameObject.SetActive(false);
 
                 if (player.chosencard != null)
@@ -69,7 +69,9 @@ public class Adventurer : Explorer
                 }
             }
             else
+            {
                 break;
+            }
         }
     }
 }

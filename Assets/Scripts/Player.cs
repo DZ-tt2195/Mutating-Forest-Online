@@ -8,53 +8,65 @@ using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using MyBox;
+using static Card;
+using System.Linq;
 
 public class Player : MonoBehaviourPunCallbacks
 {
-    public PhotonView pv;
-    public Transform hand;
-    public SendChoice buttonprefab;
-    public CardDisplay carddisplay;
-    [HideInInspector] public TMP_Text choicetext;
-    [HideInInspector] public Transform choicehand;
-    PlayerButton playerbutton;
 
-    [ReadOnly] public Pawn pawn;
-    [ReadOnly] public int position;
-    [ReadOnly] public Photon.Realtime.Player photonrealtime;
+#region Variables
 
-    [ReadOnly] public string choice;
-    [ReadOnly] public Card chosencard;
-    [ReadOnly] public TileData chosentile;
-    enum TypeOfCard { None, Any, Paths, Explorers };
+    [Foldout("Prefabs", true)]
+        public SendChoice buttonprefab;
+        public CardDisplay carddisplay;
 
-    SendChoice endturnbutton;
-    [ReadOnly] public bool druid = false;
-    [ReadOnly] public bool enchanted = false;
-    [ReadOnly] public bool waiting = false;
-    [ReadOnly] bool turnon = false;
-    [ReadOnly] public bool hermit = false;
-    bool didnothing;
+    [Foldout("Cards", true)]
+        Transform hand;
+        [ReadOnly] public List<Card> cardsInHand = new List<Card>();
 
-    [ReadOnly] public int plays;
-    [ReadOnly] public int moves;
+    [Foldout("Player Info", true)]
+        [ReadOnly] public Pawn pawn;
+        public PhotonView pv;
+        PlayerButton playerbutton;
+        [ReadOnly] public int position;
+        [ReadOnly] public Photon.Realtime.Player photonrealtime;
 
-    // Start is called before the first frame update
+    [Foldout("Decisions", true)]
+        [ReadOnly] public TMP_Text choicetext;
+        [ReadOnly] public Transform choicehand;
+        [ReadOnly] public string choice;
+        [ReadOnly] public Card chosencard;
+        [ReadOnly] public TileData chosentile;
+        enum TypeOfCard { None, Any, Paths, Explorers };
+
+    [Foldout("Turns", true)]
+        SendChoice endturnbutton;
+        [ReadOnly] public bool druid = false;
+        [ReadOnly] public bool enchanted = false;
+        [ReadOnly] public bool waiting = false;
+        [ReadOnly] bool turnon = false;
+        [ReadOnly] public bool hermit = false;
+        bool didnothing;
+        [ReadOnly] public int plays;
+        [ReadOnly] public int moves;
+
+    #endregion
+
+#region Setup
+
     void Start()
     {
         this.transform.SetParent(GameObject.Find("Store Players").transform);
-        this.transform.localPosition = new Vector2(-50, -105);
-
+        this.transform.localPosition = new Vector2(0, 0);
         hand = this.transform.GetChild(0).transform;
-        hand.transform.localPosition = new Vector2(0, -280);
-        hand.transform.localScale = new Vector3(1, 1, 1);
-        this.transform.GetChild(1).transform.localPosition = new Vector3(0, -520, 0);
 
         pv = GetComponent<PhotonView>();
         this.name = pv.Owner.NickName;
 
         if (pv.IsMine)
         {
+            this.transform.localPosition = new Vector2(0, 0);
+
             choicetext = GameObject.Find("Ability Collector Text").GetComponent<TMP_Text>();
             choicetext.transform.parent.gameObject.SetActive(false);
             choicetext.transform.parent.SetParent(this.transform);
@@ -65,6 +77,19 @@ public class Player : MonoBehaviourPunCallbacks
             endturnbutton.gameObject.SetActive(false);
         }
     }
+
+    [PunRPC]
+    public void StartPawn(string buttonname, int pawnID, int startingposition)
+    {
+        pawn = PhotonView.Find(pawnID).GetComponent<Pawn>();
+        pawn.SetStart(this, startingposition);
+        playerbutton = GameObject.Find(buttonname).GetComponent<PlayerButton>();
+        playerbutton.MoveBar();
+    }
+
+    #endregion
+
+#region Decisions
 
     [PunRPC]
     public IEnumerator ClearGrid()
@@ -98,13 +123,13 @@ public class Player : MonoBehaviourPunCallbacks
         cd.CardArt(newpath);
     }
 
-    [PunRPC]
-    public void StartPawn(string buttonname, int pawnID, int startingposition)
+    public SendChoice CreateButton(string x)
     {
-        pawn = PhotonView.Find(pawnID).GetComponent<Pawn>();
-        pawn.SetStart(this, startingposition);
-        playerbutton = GameObject.Find(buttonname).GetComponent<PlayerButton>();
-        playerbutton.MoveBar();
+        SendChoice y = Instantiate(buttonprefab, choicehand);
+        y.textbox.text = x;
+        y.name = x;
+        y.EnableButton(this);
+        return y;
     }
 
     public void FlipButton()
@@ -116,14 +141,20 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
-    public SendChoice CreateButton(string x)
+    public void Update()
     {
-        SendChoice y = Instantiate(buttonprefab, choicehand);
-        y.textbox.text = x;
-        y.name = x;
-        y.EnableButton(this);
-        return y;
+        if (endturnbutton != null)
+        {
+            if (didnothing)
+                endturnbutton.EnableButton(this);
+            else
+                endturnbutton.DisableButton();
+        }
     }
+
+    #endregion
+
+#region Numbers
 
     public void AddPlays(int n)
     {
@@ -151,16 +182,9 @@ public class Player : MonoBehaviourPunCallbacks
         playerbutton.textbox.text = $"{this.name}: {cardsinhand} Cards";
     }
 
-    public void Update()
-    {
-        if (endturnbutton != null)
-        {
-            if (didnothing)
-                endturnbutton.EnableButton(this);
-            else
-                endturnbutton.DisableButton();
-        }
-    }
+    #endregion
+
+#region Turns
 
     public IEnumerator TakeTurnRPC(Photon.Realtime.Player requestingplayer)
     {
@@ -305,46 +329,45 @@ public class Player : MonoBehaviourPunCallbacks
         if (pv.IsMine)
         {
             bool explorerinhand = false;
-            for (int i = 0; i < hand.childCount; i++)
+            foreach (Card card in this.cardsInHand)
             {
-                SendChoice ct = hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.myType == Card.CardType.Explorer)
+                if (card.myType == CardType.Explorer)
                 {
-                    ct.EnableButton(this);
+                    card.choicescript.EnableButton(this);
                     explorerinhand = true;
                 }
             }
 
             if (explorerinhand)
             {
-                choicetext.transform.parent.gameObject.SetActive(true);
-                choicetext.text = $"{this.name}: Play an explorer?";
-                SendChoice x = CreateButton("End Phase");
+                this.choicetext.transform.parent.gameObject.SetActive(true);
+                this.choicetext.text = $"{this.name}: Play an explorer twice?";
+                SendChoice x = this.CreateButton("No");
 
-                choice = "";
-                chosencard = null;
-                while (choice == "")
+                this.choice = "";
+                this.chosencard = null;
+                while (this.choice == "")
                     yield return null;
 
                 Destroy(x.gameObject);
-                for (int i = 0; i < hand.childCount; i++)
-                    hand.GetChild(i).GetComponent<SendChoice>().DisableButton();
-                choicetext.transform.parent.gameObject.SetActive(false);
 
-                if (chosencard != null)
+                foreach (Card card in this.cardsInHand)
+                    card.choicescript.DisableButton();
+                this.choicetext.transform.parent.gameObject.SetActive(false);
+
+                if (this.chosencard != null)
                 {
-                    didnothing = false;
-                    Card playedcard = chosencard;
+                    Card playedcard = this.chosencard;
+                    this.photonView.RPC("CreateExplorerGrid", RpcTarget.All, playedcard.pv.ViewID);
+                    this.photonView.RPC("SendDiscard", RpcTarget.All, playedcard.pv.ViewID);
 
-                    photonView.RPC("CreateExplorerGrid", RpcTarget.All, playedcard.pv.ViewID);
-                    photonView.RPC("SendDiscard", RpcTarget.All, playedcard.pv.ViewID);
-                    AddPlays(-1);
                     yield return playedcard.GetComponent<Explorer>().PlayThis(this);
-                    yield return new WaitForSeconds(0.5f);
+                }
+                else
+                {
+                    choice = "End Phase";
                 }
             }
-            else
-                choice = "End Phase";
         }
     }
 
@@ -361,14 +384,14 @@ public class Player : MonoBehaviourPunCallbacks
                 choice = "";
                 chosencard = null;
 
-                List<SendChoice> listofchoices = new List<SendChoice>();
-                listofchoices.Add(CreateButton("Yes"));
-                listofchoices.Add(CreateButton("No"));
+                List<SendChoice> listofchoices = new List<SendChoice> { CreateButton("Yes"), CreateButton("No") };
 
                 while (choice == "")
                     yield return null;
+
                 for (int i = 0; i < listofchoices.Count; i++)
                     Destroy(listofchoices[i].gameObject);
+
                 choicetext.transform.parent.gameObject.SetActive(false);
                 nextposition.choicescript.DisableButton();
 
@@ -379,7 +402,9 @@ public class Player : MonoBehaviourPunCallbacks
                 }
             }
             else
+            {
                 choice = "End Phase";
+            }
         }
     }
 
@@ -387,39 +412,36 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (pv.IsMine)
         {
-            bool PathInHand = false;
-            for (int i = 0; i < hand.childCount; i++)
+            bool pathinhand = false;
+
+            foreach (Card card in this.cardsInHand)
             {
-                SendChoice ct = hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.myType == Card.CardType.Path)
+                if (card.myType == CardType.Path)
                 {
-                    ct.EnableButton(this);
-                    PathInHand = true;
+                    pathinhand = true;
+                    card.choicescript.EnableButton(this);
                 }
             }
 
-            if (PathInHand)
+            if (pathinhand)
             {
-                choicetext.transform.parent.gameObject.SetActive(true);
-                choicetext.text = $"{this.name}: Play a path?";
-                SendChoice x = CreateButton("End Phase");
+                this.choicetext.transform.parent.gameObject.SetActive(true);
+                this.choicetext.text = $"{this.name}: Play a path?";
+                SendChoice x = this.CreateButton("No");
 
-                choice = "";
-                chosencard = null;
-                while (choice == "")
+                this.choice = "";
+                this.chosencard = null;
+                while (this.choice == "")
                     yield return null;
 
                 Destroy(x.gameObject);
-                for (int i = 0; i < hand.childCount; i++)
-                    hand.GetChild(i).GetComponent<SendChoice>().DisableButton();
-                choicetext.transform.parent.gameObject.SetActive(false);
+                foreach (Card card in this.cardsInHand)
+                    card.choicescript.DisableButton();
+                this.choicetext.transform.parent.gameObject.SetActive(false);
 
-                if (chosencard != null)
+                if (this.chosencard != null)
                 {
-                    choicetext.transform.parent.gameObject.SetActive(true);
-                    choicetext.text = $"{this.name}: Place that Path in the forest";
-
-                    Path cardforlater = chosencard.GetComponent<Path>();
+                    Path cardforlater = this.chosencard.GetComponent<Path>();
                     for (int i = 0; i < Manager.instance.listoftiles.Count; i++)
                     {
                         TileData nexttile = Manager.instance.listoftiles[i];
@@ -427,22 +449,22 @@ public class Player : MonoBehaviourPunCallbacks
                             nexttile.choicescript.EnableButton(this);
                     }
 
-                    choice = "";
-                    chosentile = null;
-                    while (choice == "")
+                    this.choice = "";
+                    this.chosentile = null;
+                    while (this.choice == "")
                         yield return null;
 
                     for (int i = 0; i < Manager.instance.listoftiles.Count; i++)
                         Manager.instance.listoftiles[i].choicescript.DisableButton();
-                    choicetext.transform.parent.gameObject.SetActive(false);
 
-                    photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, chosentile.position, cardforlater.flipped);
-                    photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, cardforlater.flipped);
-                    yield return new WaitForSeconds(0.5f);
+                    this.photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, this.chosentile.position, cardforlater.flipped);
+                    this.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, cardforlater.flipped);
                 }
             }
             else
+            {
                 choice = "End Phase";
+            }
         }
     }
 
@@ -457,6 +479,10 @@ public class Player : MonoBehaviourPunCallbacks
         x.NewTile(newpath);
     }
 
+    #endregion
+
+#region Cards
+
     [PunRPC]
     void SendDiscard(int cardID)
     {
@@ -467,7 +493,9 @@ public class Player : MonoBehaviourPunCallbacks
             x.localPosition = new Vector2(0, 0);
         }
         else
+        {
             x.SetParent(null);
+        }
     }
 
     public void DrawCardRPC(int cardsToDraw)
@@ -510,87 +538,20 @@ public class Player : MonoBehaviourPunCallbacks
         photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
     }
 
+#endregion
+
+#region Misc
+
     [PunRPC]
     public void EnchantressAttack()
     {
         enchanted = true;
     }
 
-    [PunRPC]
-    public IEnumerator GuideChoice(Photon.Realtime.Player requestingplayer)
-    {
-        choicetext.transform.parent.gameObject.SetActive(true);
-        choicetext.text = $"{this.name}: Choose a bonus for {requestingplayer.NickName}";
-        choice = "";
-
-        List<SendChoice> listofchoices = new List<SendChoice>();
-        listofchoices.Add(CreateButton("+2 Draw"));
-        listofchoices.Add(CreateButton("+2 Plays"));
-        listofchoices.Add(CreateButton("+2 Moves"));
-
-        while (choice == "")
-            yield return null;
-        for (int i = 0; i < listofchoices.Count; i++)
-            Destroy(listofchoices[i].gameObject);
-        choicetext.transform.parent.gameObject.SetActive(false);
-        GetPreviousPlayer().photonView.RPC("ReceiveGuideChoice", requestingplayer, choice);
-    }
-
-    [PunRPC]
-    void ReceiveGuideChoice(string choice)
-    {
-        Debug.Log(choice);
-        switch (choice)
-        {
-            case "+2 Draw":
-                DrawCardRPC(2);
-                break;
-            case "+2 Plays":
-                AddPlays(2);
-                break;
-            case "+2 Moves":
-                AddMoves(2);
-                break;
-            default:
-                break;
-        }
-        photonView.RPC("WaitDone", photonrealtime);
-    }
-
-    [PunRPC]
-    public IEnumerator ArcherAttack(Photon.Realtime.Player requestingplayer)
-    {
-        int cardstodiscard = hand.childCount / 2;
-        for (int i = cardstodiscard; i>0; i--)
-        {
-            for (int j = 0; j < hand.childCount; j++)
-            {
-                SendChoice ct = hand.GetChild(j).GetComponent<SendChoice>();
-                ct.EnableButton(this);
-            }
-
-            choicetext.transform.parent.gameObject.SetActive(true);
-            choicetext.text = $"{this.name}: Discard a card ({i} more)";
-
-            choice = "";
-            chosencard = null;
-            while (choice == "")
-                yield return null;
-
-            for (int j = 0; j < hand.childCount; j++)
-                hand.GetChild(j).GetComponent<SendChoice>().DisableButton();
-            choicetext.transform.parent.gameObject.SetActive(false);
-            photonView.RPC("SendDiscard", RpcTarget.All, chosencard.pv.ViewID);
-            photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
-        }
-
-        GameObject.Find(requestingplayer.NickName).GetComponent<Player>().photonView.RPC("WaitDone", requestingplayer);
-    }
-
     public Player GetPreviousPlayer()
     {
         if (this.position == 0)
-            return Manager.instance.playerordergameobject[Manager.instance.playerordergameobject.Count - 1];
+            return Manager.instance.playerordergameobject[^1];
         else
             return Manager.instance.playerordergameobject[this.position - 1];
     }
@@ -608,5 +569,7 @@ public class Player : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("1. Lobby");
     }
+
+    #endregion
 
 }

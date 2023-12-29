@@ -126,7 +126,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
         }
 
         instructions.text = "Connected! Setting up...";
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         if (PhotonNetwork.IsMasterClient)
         {
