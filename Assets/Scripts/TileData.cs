@@ -2,28 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MyBox;
 
 public class TileData : MonoBehaviour
 {
-    [HideInInspector] public int row;
-    [HideInInspector] public int column;
-    public int position;
-    public Sprite blankart;
-    public Sprite riverart;
-    [HideInInspector] public bool river = false;
+    [ReadOnly] public int row;
+    [ReadOnly] public int column;
+    [ReadOnly] public int position;
+    [SerializeField] Sprite blankart;
+    [SerializeField] Sprite riverart;
+    [ReadOnly] public bool river = false;
 
-    public Path mypath;
+    [ReadOnly] public Path mypath;
 
-    [HideInInspector] public TileData up;
-    [HideInInspector] public TileData left;
-    [HideInInspector] public TileData down;
-    [HideInInspector] public TileData right;
+    [ReadOnly] public TileData up;
+    [ReadOnly] public TileData left;
+    [ReadOnly] public TileData down;
+    [ReadOnly] public TileData right;
 
-    public SendChoice choicescript;
-    public Image image;
+    [ReadOnly] public SendChoice choicescript;
+    [ReadOnly] Image image;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         image = GetComponent<Image>();
         choicescript = GetComponent<SendChoice>();

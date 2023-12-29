@@ -5,13 +5,14 @@ using Photon.Pun;
 
 public class Cartographer : Explorer
 {
-    [PunRPC]
-    void FlipPath(int position)
+    protected override void GetText()
     {
-        Path chosenpath = Manager.instance.listoftiles[position].mypath;
-        chosenpath.FlipCard();
-        Manager.instance.listoftiles[position].NewTile(chosenpath);
+        this.name = "Cartographer";
+        cardName.text = "Cartographer";
+        cardText.text = "+2 Draw\nEither rotate your current Path, or rotate a Path you’re adjacent to.";
+        cardArtist.text = "Mark Poole (“Cartographer”)";
     }
+
     public override IEnumerator PlayThis(Player player)
     {
         player.DrawCardRPC(2);

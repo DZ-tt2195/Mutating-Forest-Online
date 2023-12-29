@@ -6,7 +6,12 @@ using UnityEngine.EventSystems;
 
 public class RightClick : MonoBehaviour, IPointerClickHandler
 {
-    public Image image;
+    Image image;
+
+    void Awake()
+    {
+        image = GetComponent<Image>();
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {

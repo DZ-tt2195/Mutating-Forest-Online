@@ -9,28 +9,28 @@ public class Path : Card
 
     //left, right, up, down
 
-    public Sprite defaultimage;
-    public Sprite flippedimage;
+    [SerializeField] Sprite defaultimage;
+    [SerializeField] Sprite flippedimage;
 
-    public bool[] enternormal = new bool[4];
-    public bool[] enterflipped = new bool[4];
+    [SerializeField] bool[] enternormal = new bool[4];
+    [SerializeField] bool[] enterflipped = new bool[4];
 
-    public bool[] exitnormal = new bool[4];
-    public bool[] exitflipped = new bool[4];
+    [SerializeField] bool[] exitnormal = new bool[4];
+    [SerializeField] bool[] exitflipped = new bool[4];
 
-    [HideInInspector] public bool enterleft;
-    [HideInInspector] public bool enterright;
-    [HideInInspector] public bool enterup;
-    [HideInInspector] public bool enterdown;
+    [SerializeField] public bool enterleft;
+    [SerializeField] public bool enterright;
+    [SerializeField] public bool enterup;
+    [SerializeField] public bool enterdown;
 
-    [HideInInspector] public bool exitleft;
-    [HideInInspector] public bool exitright;
-    [HideInInspector] public bool exitup;
-    [HideInInspector] public bool exitdown;
+    [SerializeField] public bool exitleft;
+    [SerializeField] public bool exitright;
+    [SerializeField] public bool exitup;
+    [SerializeField] public bool exitdown;
 
     private void Awake()
     {
-        this.path = true;
+        this.myType = CardType.Explorer;
 
         enterleft = enternormal[0];
         enterright = enternormal[1];

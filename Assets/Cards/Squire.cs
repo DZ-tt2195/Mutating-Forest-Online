@@ -5,13 +5,21 @@ using Photon.Pun;
 
 public class Squire : Explorer
 {
+    protected override void GetText()
+    {
+        this.name = "Squire";
+        cardName.text = "Squire";
+        cardText.text = "You may play an Explorer from your hand twice.";
+        cardArtist.text = "Anthony Palumbo (“Seekers’ Squire”)";
+    }
+
     public override IEnumerator PlayThis(Player player)
     {
         bool explorerinhand = false;
         for (int i = 0; i < player.hand.childCount; i++)
         {
             SendChoice ct = player.hand.GetChild(i).GetComponent<SendChoice>();
-            if (ct.card.explorer)
+            if (ct.card.myType == CardType.Explorer)
             {
                 ct.EnableButton(player);
                 explorerinhand = true;

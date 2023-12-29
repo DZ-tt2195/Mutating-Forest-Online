@@ -4,17 +4,17 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using UnityEngine.UI;
+using MyBox;
 
 public class Card : MonoBehaviour
 {
-    [HideInInspector] public PhotonView pv;
-    [HideInInspector] public bool explorer;
-    [HideInInspector] public bool path;
-    [HideInInspector] public Image image;
-    [HideInInspector] public SendChoice choicescript;
+    [ReadOnly] public PhotonView pv;
+    public enum CardType { Path, Explorer};
+    [ReadOnly] public CardType myType;
+    [ReadOnly] public Image image;
+    [ReadOnly] public SendChoice choicescript;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         pv = this.GetComponent<PhotonView>();
         image = GetComponent<Image>();

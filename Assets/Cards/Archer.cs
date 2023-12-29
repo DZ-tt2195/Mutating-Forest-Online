@@ -5,6 +5,14 @@ using Photon.Pun;
 
 public class Archer : Explorer
 {
+    protected override void GetText()
+    {
+        this.name = "Archer";
+        cardName.text = "Archer";
+        cardText.text = "Each other player discards half of their hand (round down).";
+        cardArtist.text = "Harald Lieske (“Archer”)";
+    }
+
     public override IEnumerator PlayThis(Player player)
     {
         int playertracker = player.position;

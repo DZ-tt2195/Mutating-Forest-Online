@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using MyBox;
 
 public class SendChoice : MonoBehaviour
 {
-    [HideInInspector] public Player choosingplayer;
-    public Button button;
-    [HideInInspector] public Card card;
-    public TMP_Text textbox;
+    [ReadOnly] public Player choosingplayer;
+    [ReadOnly] public Button button;
+    [ReadOnly] public Card card;
+    [SerializeField] public TMP_Text textbox;
     Image border;
-    [HideInInspector] public TileData chosentile;
+    [ReadOnly] public TileData chosentile;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         card = this.GetComponent<Card>();
         chosentile = this.GetComponent<TileData>();
@@ -27,11 +27,11 @@ public class SendChoice : MonoBehaviour
     {
         if (border != null && button.interactable)
         {
-            border.color = new Color(1, 1, 1, Manager.instance.opacity);
+            border.SetAlpha(Manager.instance.opacity);
         }
         else if (border != null && !button.interactable)
         {
-            border.color = new Color(1, 1, 1, 0);
+            border.SetAlpha(0);
         }
     }
 

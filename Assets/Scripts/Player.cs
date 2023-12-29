@@ -111,8 +111,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         for (int i = 0; i<hand.childCount; i++)
         {
-            Path nextcard = hand.GetChild(i).GetComponent<Path>();
-            if (nextcard != null)
+            if (hand.GetChild(i).TryGetComponent<Path>(out var nextcard))
                 nextcard.FlipCard();
         }
     }
@@ -309,7 +308,7 @@ public class Player : MonoBehaviourPunCallbacks
             for (int i = 0; i < hand.childCount; i++)
             {
                 SendChoice ct = hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.explorer)
+                if (ct.card.myType == Card.CardType.Explorer)
                 {
                     ct.EnableButton(this);
                     explorerinhand = true;
@@ -392,7 +391,7 @@ public class Player : MonoBehaviourPunCallbacks
             for (int i = 0; i < hand.childCount; i++)
             {
                 SendChoice ct = hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.path)
+                if (ct.card.myType == Card.CardType.Path)
                 {
                     ct.EnableButton(this);
                     PathInHand = true;

@@ -5,6 +5,14 @@ using Photon.Pun;
 
 public class Adventurer : Explorer
 {
+    protected override void GetText()
+    {
+        this.name = "Adventurer";
+        cardName.text = "Adventurer";
+        cardText.text = "+2 Move\nPlay up to 2 Paths from your hand.";
+        cardArtist.text = "Ryan Laukat (“Adventurer”)";
+    }
+
     public override IEnumerator PlayThis(Player player)
     {
         player.AddMoves(2);
@@ -15,7 +23,7 @@ public class Adventurer : Explorer
             for (int i = 0; i < player.hand.childCount; i++)
             {
                 SendChoice ct = player.hand.GetChild(i).GetComponent<SendChoice>();
-                if (ct.card.path)
+                if (ct.card.myType == CardType.Path)
                 {
                     ct.EnableButton(player);
                     pathinhand = true;

@@ -5,6 +5,14 @@ using Photon.Pun;
 
 public class Witch : Explorer
 {
+    protected override void GetText()
+    {
+        this.name = "Witch";
+        cardName.text = "Witch";
+        cardText.text = "+1 Play +1 Move\nTake a Path with no players on it and move it to another blank spot.";
+        cardArtist.text = "Hans Krill (“Sorceress”)";
+    }
+
     public override IEnumerator PlayThis(Player player)
     {
         yield return null;

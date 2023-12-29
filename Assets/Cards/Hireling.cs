@@ -5,6 +5,14 @@ using Photon.Pun;
 
 public class Hireling : Explorer
 {
+    protected override void GetText()
+    {
+        this.name = "Hireling";
+        cardName.text = "Hireling";
+        cardText.text = "+1 Draw +1 Play\nYou may swap your current Path with a Path that you’re adjacent to (don’t move any players).";
+        cardArtist.text = "Claus Stephan (“Hireling”)";
+    }
+
     public override IEnumerator PlayThis(Player player)
     {
         player.DrawCardRPC(1);
