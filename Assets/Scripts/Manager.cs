@@ -22,7 +22,6 @@ public class Manager : MonoBehaviour, IOnEventCallback
 
     [ReadOnly] public TMP_Text instructions;
     [ReadOnly] public TMP_Text numbers;
-    [ReadOnly]  Transform cardback;
     [ReadOnly] public Transform deck;
     [ReadOnly] public Transform discard;
     Transform gameboard;
@@ -37,13 +36,13 @@ public class Manager : MonoBehaviour, IOnEventCallback
     public const byte AddNextPlayerEvent = 1;
     public const byte GameOverEvent = 2;
 
-    // Start is called before the first frame update
+    public Sprite cardback;
+
     void Awake()
     {
         instance = this;
         instructions = GameObject.Find("Instructions").GetComponent<TMP_Text>();
         numbers = GameObject.Find("Numbers").GetComponent<TMP_Text>();
-        cardback = GameObject.Find("Cardback").transform;
         deck = GameObject.Find("Deck").transform;
         discard = GameObject.Find("Discard").transform;
         gameboard = GameObject.Find("Forest").transform;

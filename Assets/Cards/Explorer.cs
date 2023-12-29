@@ -12,9 +12,9 @@ public class Explorer : Card
     private void Start()
     {
         myType = CardType.Explorer;
-        cardName = this.transform.GetChild(2).GetComponent<TMP_Text>();
-        cardText = this.transform.GetChild(3).GetComponent<TMP_Text>();
-        cardArtist = this.transform.GetChild(4).GetComponent<TMP_Text>();
+        cardName = this.transform.GetChild(1).GetChild(2).GetComponent<TMP_Text>();
+        cardText = this.transform.GetChild(1).GetChild(3).GetComponent<TMP_Text>();
+        cardArtist = this.transform.GetChild(1).GetChild(4).GetComponent<TMP_Text>();
         GetText();
     }
 
@@ -26,5 +26,12 @@ public class Explorer : Card
     public virtual IEnumerator PlayThis(Player player)
     {
         yield return null;
+    }
+
+    protected override void SetSprite()
+    {
+        canvasgroup.alpha = 1;
+        image.sprite = null;
+        image.color = Color.black;
     }
 }

@@ -10,6 +10,7 @@ using Photon.Realtime;
 using MyBox;
 using static Card;
 using System.Linq;
+using UnityEngine.XR;
 
 public class Player : MonoBehaviourPunCallbacks
 {
@@ -57,7 +58,9 @@ public class Player : MonoBehaviourPunCallbacks
     void Start()
     {
         this.transform.SetParent(GameObject.Find("Store Players").transform);
+        Debug.Log(this.transform.localPosition);
         this.transform.localPosition = new Vector2(0, 0);
+        Debug.Log(this.transform.localPosition);
         hand = this.transform.GetChild(0).transform;
 
         pv = GetComponent<PhotonView>();
@@ -65,8 +68,6 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (pv.IsMine)
         {
-            this.transform.localPosition = new Vector2(0, 0);
-
             choicetext = GameObject.Find("Ability Collector Text").GetComponent<TMP_Text>();
             choicetext.transform.parent.gameObject.SetActive(false);
             choicetext.transform.parent.SetParent(this.transform);
@@ -138,17 +139,6 @@ public class Player : MonoBehaviourPunCallbacks
         {
             if (hand.GetChild(i).TryGetComponent<Path>(out var nextcard))
                 nextcard.FlipCard();
-        }
-    }
-
-    public void Update()
-    {
-        if (endturnbutton != null)
-        {
-            if (didnothing)
-                endturnbutton.EnableButton(this);
-            else
-                endturnbutton.DisableButton();
         }
     }
 
@@ -224,6 +214,7 @@ public class Player : MonoBehaviourPunCallbacks
         {
             photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
             didnothing = true;
+            endturnbutton.EnableButton(this);
             bool continueturn = true;
 
             plays = (enchanted) ? 1 : 2;
@@ -234,7 +225,7 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
                 photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
-                Manager.instance.instructions.text = $"Your Turn";
+                Manager.instance.instructions.text = $"Your Turn - Play Explorers";
 
                 yield return AskExplorer();
                 if (choice == "Do Nothing")
@@ -250,6 +241,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 else
                 {
+                    AddPlays(-1);
                     didnothing = false;
                     endturnbutton.DisableButton();
                 }
@@ -258,7 +250,7 @@ public class Player : MonoBehaviourPunCallbacks
             while (plays > 0 && continueturn)
             {
                 photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-                Manager.instance.instructions.text = $"Your Turn";
+                Manager.instance.instructions.text = $"Your Turn - Play Paths";
                 photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
 
                 yield return AskPath();
@@ -284,7 +276,7 @@ public class Player : MonoBehaviourPunCallbacks
             while (moves > 0 && continueturn)
             {
                 photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-                Manager.instance.instructions.text = $"Your Turn";
+                Manager.instance.instructions.text = $"Your Turn - Move";
                 photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
 
                 yield return AskMove();
@@ -341,7 +333,7 @@ public class Player : MonoBehaviourPunCallbacks
             if (explorerinhand)
             {
                 this.choicetext.transform.parent.gameObject.SetActive(true);
-                this.choicetext.text = $"{this.name}: Play an explorer twice?";
+                this.choicetext.text = $"{this.name}: Play an explorer?";
                 SendChoice x = this.CreateButton("No");
 
                 this.choice = "";
@@ -360,7 +352,6 @@ public class Player : MonoBehaviourPunCallbacks
                     Card playedcard = this.chosencard;
                     this.photonView.RPC("CreateExplorerGrid", RpcTarget.All, playedcard.pv.ViewID);
                     this.photonView.RPC("SendDiscard", RpcTarget.All, playedcard.pv.ViewID);
-
                     yield return playedcard.GetComponent<Explorer>().PlayThis(this);
                 }
                 else
@@ -533,12 +524,33 @@ public class Player : MonoBehaviourPunCallbacks
         for (int i = 0; i < cardIDs.Length; i++)
         {
             yield return new WaitForSeconds(0.05f);
-            PhotonView.Find(cardIDs[i]).transform.SetParent(this.hand);
+            Card newCard = PhotonView.Find(cardIDs[i]).GetComponent<Card>();
+
+            newCard.transform.SetParent(this.hand);
+            newCard.transform.localPosition = new Vector2(0, -1100);
+            cardsInHand.Add(newCard);
+            newCard.image.sprite = Manager.instance.cardback;
         }
+        SortHand();
         photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
     }
 
-#endregion
+    void SortHand()
+    {
+        for (int i = 0; i < cardsInHand.Count; i++)
+        {
+            Card nextCard = cardsInHand[i];
+            float startingX = (cardsInHand.Count >= 8) ? -900 : (cardsInHand.Count - 1) * -150;
+            float difference = (cardsInHand.Count >= 8) ? 1800f / (cardsInHand.Count - 1) : 300;
+            Vector2 newPosition = new(startingX + difference * i, -520);
+            StartCoroutine(nextCard.MoveCard(newPosition, newPosition, new Vector3(0, 0, 0), 0.3f));
+        }
+
+        foreach (Card card in cardsInHand)
+            StartCoroutine(card.RevealCard(0.3f));
+    }
+
+    #endregion
 
 #region Misc
 

@@ -81,4 +81,10 @@ public class Path : Card
     {
         FlipCard(!flipped);
     }
+
+    protected override void SetSprite()
+    {
+        canvasgroup.alpha = 1;
+        FlipCard(flipped);
+    }
 }
