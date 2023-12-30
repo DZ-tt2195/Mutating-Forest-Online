@@ -17,9 +17,11 @@ public class RightClick : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
+            /*
             Manager.instance.blownUp.sprite = image.sprite;
             Manager.instance.blownUp.transform.parent.gameObject.SetActive(true);
             Manager.instance.blownUp.transform.parent.SetAsLastSibling();
+            */
         }
     }
 }

@@ -56,8 +56,7 @@ public class Cartographer : Explorer
             player.choice = "";
             player.chosentile = null;
 
-            List<SendChoice> listofchoices = new List<SendChoice>();
-            listofchoices.Add(player.CreateButton("No"));
+            List<SendChoice> listofchoices = new List<SendChoice>{player.CreateButton("No")};
 
             while (player.choice == "")
                 yield return null;
@@ -69,9 +68,14 @@ public class Cartographer : Explorer
 
             player.choicetext.transform.parent.gameObject.SetActive(false);
             if (player.chosentile != null)
-            {
                 this.pv.RPC("FlipPath", RpcTarget.All, player.chosentile.position);
-            }
         }
     }
+
+    [PunRPC]
+    void FlipPath(int chosenPosition)
+    {
+        Manager.instance.listoftiles[chosenPosition].mypath.FlipCard();
+    }
+
 }

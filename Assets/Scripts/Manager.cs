@@ -13,30 +13,34 @@ using MyBox;
 public class Manager : MonoBehaviour, IOnEventCallback
 {
     public static Manager instance;
-    public TileData tileclone;
-    [SerializeField] PlayerButton playerbuttonclone;
-    [SerializeField] internal Image blownUp;
-    [SerializeField] internal Transform cardsplayedgrid;
-    [SerializeField] List<Pawn> listofpawns = new List<Pawn>();
-    [ReadOnly] public List<TileData> listoftiles = new List<TileData>();
-
-    [ReadOnly] public TMP_Text instructions;
-    [ReadOnly] public TMP_Text numbers;
-    [ReadOnly] public Transform deck;
-    [ReadOnly] public Transform discard;
-    Transform gameboard;
-
-    [ReadOnly] public List<Player> playerordergameobject = new List<Player>();
-    [ReadOnly] public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
-
-    [ReadOnly] public float opacity = 1;
-    [ReadOnly] public bool decrease = true;
-    [ReadOnly] public bool gameon = false;
-
     public const byte AddNextPlayerEvent = 1;
     public const byte GameOverEvent = 2;
 
-    public Sprite cardback;
+    [Foldout("Prefabs", true)]
+        [SerializeField] TileData tileclone;
+        [SerializeField] PlayerButton playerbuttonclone;
+        public Sprite cardback;
+
+    [Foldout("UI", true)]
+        [SerializeField] internal Transform cardsplayedgrid;
+        Transform gameboard;
+
+    [Foldout("Lists", true)]
+        [SerializeField] List<Pawn> listofpawns = new List<Pawn>();
+        [ReadOnly] public List<TileData> listoftiles = new List<TileData>();
+        [ReadOnly] public List<Player> playerordergameobject = new List<Player>();
+        [ReadOnly] public List<Photon.Realtime.Player> playerorderphotonlist = new List<Photon.Realtime.Player>();
+
+    [Foldout("Text", true)]
+        [ReadOnly] public TMP_Text instructions;
+        [ReadOnly] public TMP_Text numbers;
+        [ReadOnly] public Transform deck;
+        [ReadOnly] public Transform discard;
+
+    [Foldout("Animation", true)]
+        [ReadOnly] public float opacity = 1;
+        [ReadOnly] public bool decrease = true;
+        [ReadOnly] public bool gameon = false;
 
     void Awake()
     {
@@ -46,7 +50,6 @@ public class Manager : MonoBehaviour, IOnEventCallback
         deck = GameObject.Find("Deck").transform;
         discard = GameObject.Find("Discard").transform;
         gameboard = GameObject.Find("Forest").transform;
-        blownUp.transform.parent.gameObject.SetActive(false);
     }
 
     void Start()
@@ -99,12 +102,6 @@ public class Manager : MonoBehaviour, IOnEventCallback
             opacity += 0.05f;
         if (opacity < 0 || opacity > 1)
             decrease = !decrease;
-    }
-
-    public void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-            blownUp.transform.parent.gameObject.SetActive(false);
     }
 
     public TileData GetPosition(int r, int c)

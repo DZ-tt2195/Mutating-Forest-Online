@@ -4011,8 +4011,8 @@ RectTransform:
   - {fileID: 779457928}
   - {fileID: 1831239563}
   - {fileID: 514380911}
-  - {fileID: 1227022227}
   - {fileID: 1749685128}
+  - {fileID: 1227022227}
   - {fileID: 1113133308}
   - {fileID: 1247511477}
   - {fileID: 151814377}
@@ -4145,8 +4145,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b97528b4a6f894ee8910ec8b7a877569, type: 2}
-  m_sharedMaterial: {fileID: 4301627588024881906, guid: b97528b4a6f894ee8910ec8b7a877569, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
+  m_sharedMaterial: {fileID: -3852492252101762229, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -28,7 +28,7 @@ public class Squire : Explorer
         if (explorerinhand)
         {
             player.choicetext.transform.parent.gameObject.SetActive(true);
-            player.choicetext.text = $"{this.name}: Play an explorer twice?";
+            player.choicetext.text = $"{this.name}: Play an explorer?";
             SendChoice x = player.CreateButton("No");
 
             player.choice = "";
@@ -49,7 +49,7 @@ public class Squire : Explorer
                 player.photonView.RPC("SendDiscard", RpcTarget.All, playedcard.pv.ViewID);
 
                 yield return playedcard.GetComponent<Explorer>().PlayThis(player);
-                yield return playedcard.GetComponent<Explorer>().PlayThis(player);
+                yield break;
             }
         }
     }

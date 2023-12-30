@@ -60,16 +60,18 @@ public class Witch : Explorer
                 blanktile[i].choicescript.DisableButton();
             player.choicetext.transform.parent.gameObject.SetActive(false);
 
-            this.pv.RPC("MovePath", Photon.Pun.RpcTarget.All, storedtile.position, player.chosentile.position);
+            this.pv.RPC("MovePath", RpcTarget.All, storedtile.position, player.chosentile.position);
         }
     }
 
     [PunRPC]
     void MovePath(int originalposition, int newposition)
     {
-        Path chosenpath = Manager.instance.listoftiles[originalposition].mypath;
-        Manager.instance.listoftiles[originalposition].NewTile(null);
-        Manager.instance.listoftiles[newposition].NewTile(chosenpath);
-    }
+        TileData oldTile = Manager.instance.listoftiles[originalposition];
+        TileData newTile = Manager.instance.listoftiles[newposition];
+        Path chosenpath = oldTile.mypath;
 
+        oldTile.mypath = null;
+        chosenpath.NewHome(newTile);
+    }
 }

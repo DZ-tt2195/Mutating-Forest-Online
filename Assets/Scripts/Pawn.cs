@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using MyBox;
 
 public class Pawn : MonoBehaviour
 {
-    public PhotonView pv;
-    public Image image;
-    public PhotonView flag;
+    [ReadOnly] public PhotonView pv;
+    [ReadOnly] public Image image;
+    [ReadOnly] public PhotonView flag;
 
-    [HideInInspector] public Player controller;
-    [HideInInspector] public TileData currenttile;
-    [HideInInspector] public TileData endtile;
+    [ReadOnly] public Player controller;
+    [ReadOnly] public TileData currenttile;
+    [ReadOnly] public TileData endtile;
 
     public void SetStart(Player controller, int position)
     {
@@ -41,7 +42,6 @@ public class Pawn : MonoBehaviour
     {
         flag.transform.SetParent(Manager.instance.listoftiles[position].transform);
         flag.transform.SetSiblingIndex(2);
-        flag.transform.localScale = new Vector2(1.35f, 1.35f);
         flag.GetComponent<RectTransform>().localPosition = new Vector2(0, 115);
         flag.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 115);
     }
@@ -51,10 +51,8 @@ public class Pawn : MonoBehaviour
     {
         currenttile = Manager.instance.listoftiles[newposition];
         this.transform.SetParent(currenttile.transform);
-        this.transform.SetSiblingIndex(1);
-        this.transform.localScale = new Vector2(2.3f, 2.3f);
-        this.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
-        this.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        this.transform.SetSiblingIndex(2);
+        this.transform.localPosition = new Vector3(0, 0, 0);
 
         if (endtile != null && currenttile.position == endtile.position)
             Manager.instance.YouWon(controller.name);
@@ -65,8 +63,8 @@ public class Pawn : MonoBehaviour
         TileData previoustile = currenttile;
         pv.RPC("NewPosition", RpcTarget.All, nexttile.position);
 
-        if (druid)
-            previoustile.NewTile(null);
+        if (druid && previoustile.mypath != null)
+            controller.photonView.RPC("PathToForest", RpcTarget.All, -1, previoustile.position, false);
     }
 
     public TileData CanMove()

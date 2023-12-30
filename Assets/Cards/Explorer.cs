@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using MyBox;
 
-public class Explorer : Card
+public class Explorer : Card, IPointerClickHandler
 {
-    protected TMP_Text cardName;
-    protected TMP_Text cardText;
-    protected TMP_Text cardArtist;
+    [ReadOnly] public TMP_Text cardName { get; private set; }
+    [ReadOnly] public TMP_Text cardText { get; private set; }
+    [ReadOnly] public TMP_Text cardArtist { get; private set; }
 
     private void Start()
     {
@@ -33,5 +35,13 @@ public class Explorer : Card
         canvasgroup.alpha = 1;
         image.sprite = null;
         image.color = Color.black;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            BlowUpCard.instance.ChangeCard(this);
+        }
     }
 }

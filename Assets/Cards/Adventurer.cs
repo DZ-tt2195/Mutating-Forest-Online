@@ -49,11 +49,11 @@ public class Adventurer : Explorer
                 if (player.chosencard != null)
                 {
                     Path cardforlater = player.chosencard.GetComponent<Path>();
-                    for (int i = 0; i < Manager.instance.listoftiles.Count; i++)
+
+                    foreach (TileData tile in Manager.instance.listoftiles)
                     {
-                        TileData nexttile = Manager.instance.listoftiles[i];
-                        if (!nexttile.river)
-                            nexttile.choicescript.EnableButton(player);
+                        if (!tile.river)
+                            tile.choicescript.EnableButton(player);
                     }
 
                     player.choice = "";
@@ -61,16 +61,15 @@ public class Adventurer : Explorer
                     while (player.choice == "")
                         yield return null;
 
-                    for (int i = 0; i < Manager.instance.listoftiles.Count; i++)
-                        Manager.instance.listoftiles[i].choicescript.DisableButton();
+                    foreach (TileData tile in Manager.instance.listoftiles)
+                        tile.choicescript.DisableButton();
 
                     player.photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, player.chosentile.position, cardforlater.flipped);
                     player.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, cardforlater.flipped);
+                    player.cardsInHand.Remove(cardforlater);
+                    player.SortHand();
+                    yield break;
                 }
-            }
-            else
-            {
-                break;
             }
         }
     }

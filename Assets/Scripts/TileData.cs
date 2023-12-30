@@ -35,20 +35,6 @@ public class TileData : MonoBehaviour
         image.sprite = riverart;
     }
 
-    public void NewTile(Path newpath)
-    {
-        if (newpath == null)
-        {
-            mypath = null;
-            image.sprite = blankart;
-        }
-        else
-        {
-            mypath = newpath;
-            image.sprite = newpath.image.sprite;
-        }
-    }
-
     public List<Pawn> PlayersOnThis()
     {
         List<Pawn> playersonthis = new List<Pawn>();

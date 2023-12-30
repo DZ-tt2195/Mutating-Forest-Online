@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MyBox;
+using UnityEngine.EventSystems;
 
-public class Path : Card
+public class Path : Card, IPointerClickHandler
 {
-    [HideInInspector] public bool flipped = false;
+    [ReadOnly] public bool flipped = false;
 
     //left, right, up, down
 
     [SerializeField] Sprite defaultimage;
-    [SerializeField] Sprite flippedimage;
 
     [SerializeField] bool[] enternormal = new bool[4];
     [SerializeField] bool[] enterflipped = new bool[4];
@@ -18,15 +19,15 @@ public class Path : Card
     [SerializeField] bool[] exitnormal = new bool[4];
     [SerializeField] bool[] exitflipped = new bool[4];
 
-    [SerializeField] public bool enterleft;
-    [SerializeField] public bool enterright;
-    [SerializeField] public bool enterup;
-    [SerializeField] public bool enterdown;
+    [ReadOnly] public bool enterleft;
+    [ReadOnly] public bool enterright;
+    [ReadOnly] public bool enterup;
+    [ReadOnly] public bool enterdown;
 
-    [SerializeField] public bool exitleft;
-    [SerializeField] public bool exitright;
-    [SerializeField] public bool exitup;
-    [SerializeField] public bool exitdown;
+    [ReadOnly] public bool exitleft;
+    [ReadOnly] public bool exitright;
+    [ReadOnly] public bool exitup;
+    [ReadOnly] public bool exitdown;
 
     private void Start()
     {
@@ -47,7 +48,7 @@ public class Path : Card
     {
         if (x)
         {
-            this.image.sprite = flippedimage;
+            StartCoroutine(MoveCard(this.transform.localPosition, new Vector3(0, 0, 180), 0.3f));
             flipped = true;
 
             enterleft = enterflipped[0];
@@ -62,7 +63,7 @@ public class Path : Card
         }
         else
         {
-            this.image.sprite = defaultimage;
+            StartCoroutine(MoveCard(this.transform.localPosition, new Vector3(0, 0, 0), 0.3f));
             flipped = false;
 
             enterleft = enternormal[0];
@@ -82,9 +83,25 @@ public class Path : Card
         FlipCard(!flipped);
     }
 
+    public void NewHome(TileData tile)
+    {
+        tile.mypath = this;
+        this.transform.SetParent(this.transform);
+        this.transform.SetSiblingIndex(0);
+        StartCoroutine(this.MoveCard(new Vector2(0, 0), (flipped) ? new Vector3(0, 0, 180) : new Vector3(0, 0, 0), 0.3f));
+    }
+
     protected override void SetSprite()
     {
         canvasgroup.alpha = 1;
-        FlipCard(flipped);
+        image.sprite = defaultimage;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            BlowUpCard.instance.ChangeCard(this);
+        }
     }
 }

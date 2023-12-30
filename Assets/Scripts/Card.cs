@@ -5,6 +5,7 @@ using TMPro;
 using Photon.Pun;
 using UnityEngine.UI;
 using MyBox;
+using UnityEngine.EventSystems;
 
 public class Card : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class Card : MonoBehaviour
         choicescript = GetComponent<SendChoice>();
     }
 
-    public IEnumerator MoveCard(Vector2 newPos, Vector2 finalPos, Vector3 newRot, float waitTime)
+    public IEnumerator MoveCard(Vector2 newPos, Vector3 newRot, float waitTime)
     {
         float elapsedTime = 0;
         Vector2 originalPos = this.transform.localPosition;
@@ -37,7 +38,8 @@ public class Card : MonoBehaviour
             yield return null;
         }
 
-        this.transform.localPosition = finalPos;
+        this.transform.localPosition = newPos;
+        this.transform.localEulerAngles = newRot;
     }
 
     public IEnumerator RevealCard(float totalTime)
@@ -75,4 +77,5 @@ public class Card : MonoBehaviour
     protected virtual void SetSprite()
     {
     }
+
 }

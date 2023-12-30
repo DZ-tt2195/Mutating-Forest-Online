@@ -17,7 +17,6 @@ public class Hireling : Explorer
     {
         player.DrawCardRPC(1);
         player.AddPlays(1);
-        yield return null;
 
         if (player.pawn.currenttile.mypath != null)
         {
@@ -54,8 +53,7 @@ public class Hireling : Explorer
                 player.choice = "";
                 player.chosentile = null;
 
-                List<SendChoice> listofchoices = new List<SendChoice>();
-                listofchoices.Add(player.CreateButton("No"));
+                List<SendChoice> listofchoices = new List<SendChoice>{player.CreateButton("No")};
 
                 while (player.choice == "")
                     yield return null;
@@ -66,9 +64,7 @@ public class Hireling : Explorer
                 player.choicetext.transform.parent.gameObject.SetActive(false);
 
                 if (player.chosentile != null)
-                {
-                    this.pv.RPC("SwapPaths", player.photonrealtime, player.pawn.currenttile.position, player.chosentile.position);
-                }
+                    this.pv.RPC("SwapPaths", RpcTarget.All, player.pawn.currenttile.position, player.chosentile.position);
             }
         }
     }
@@ -76,10 +72,13 @@ public class Hireling : Explorer
     [PunRPC]
     void SwapPaths(int currentposition, int swappedposition)
     {
-        Path path1 = Manager.instance.listoftiles[currentposition].mypath;
-        Path path2 = Manager.instance.listoftiles[swappedposition].mypath;
-        Manager.instance.listoftiles[currentposition].NewTile(path2);
-        Manager.instance.listoftiles[swappedposition].NewTile(path1);
+        TileData tile1 = Manager.instance.listoftiles[currentposition];
+        TileData tile2 = Manager.instance.listoftiles[swappedposition];
+        Path path1 = tile1.mypath;
+        Path path2 = tile2.mypath;
+
+        path1.NewHome(tile2);
+        path2.NewHome(tile1);
     }
 
 }
