@@ -65,7 +65,7 @@ public class Adventurer : Explorer
                         tile.choicescript.DisableButton();
 
                     player.photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, player.chosentile.position, cardforlater.flipped);
-                    player.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, cardforlater.flipped);
+                    player.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID);
                     player.cardsInHand.Remove(cardforlater);
                     player.SortHand();
                     yield break;

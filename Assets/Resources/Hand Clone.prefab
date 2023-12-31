@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonprefab: {fileID: 4195943711115605911, guid: 28e18654681ce4b2b904361adaa065bd, type: 3}
-  carddisplay: {fileID: 5757388918602357954, guid: a73fae87af2024d7dbf1b16955286239, type: 3}
+  carddisplay: {fileID: 7191955972438445625, guid: cff89af4c5c5a45a1a88bfd81023f869, type: 3}
   cardsInHand: []
   pawn: {fileID: 0}
   pv: {fileID: 1971174412856205664}

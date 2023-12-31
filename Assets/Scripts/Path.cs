@@ -86,7 +86,7 @@ public class Path : Card, IPointerClickHandler
     public void NewHome(TileData tile)
     {
         tile.mypath = this;
-        this.transform.SetParent(this.transform);
+        this.transform.SetParent(tile.transform);
         this.transform.SetSiblingIndex(0);
         StartCoroutine(this.MoveCard(new Vector2(0, 0), (flipped) ? new Vector3(0, 0, 180) : new Vector3(0, 0, 0), 0.3f));
     }

@@ -23,6 +23,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     [Foldout("Cards", true)]
         Transform hand;
+        Canvas canvas;
         [ReadOnly] public List<Card> cardsInHand = new List<Card>();
 
     [Foldout("Player Info", true)]
@@ -57,6 +58,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         this.transform.SetParent(GameObject.Find("Store Players").transform);
         this.transform.localPosition = new Vector2(0, 0);
         hand = this.transform.GetChild(0).transform;
@@ -114,11 +116,11 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void CreatePathGrid(int cardID, bool flipped)
+    public void CreatePathGrid(int cardID)
     {
         Path newpath = PhotonView.Find(cardID).GetComponent<Path>();
         CardDisplay cd = Instantiate(carddisplay, Manager.instance.cardsplayedgrid.transform);
-        cd.CardArt(newpath, flipped);
+        cd.CardArt(newpath);
     }
 
     public SendChoice CreateButton(string x)
@@ -220,6 +222,7 @@ public class Player : MonoBehaviourPunCallbacks
 
             while (plays > 0 && continueturn)
             {
+                yield return new WaitForSeconds(0.2f);
                 photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
                 photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
                 Manager.instance.instructions.text = $"Your Turn - Play Explorers";
@@ -246,6 +249,7 @@ public class Player : MonoBehaviourPunCallbacks
 
             while (plays > 0 && continueturn)
             {
+                yield return new WaitForSeconds(0.2f);
                 photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
                 Manager.instance.instructions.text = $"Your Turn - Play Paths";
                 photonView.RPC("WaitForPlayer", RpcTarget.Others, this.name);
@@ -410,7 +414,7 @@ public class Player : MonoBehaviourPunCallbacks
                         tile.choicescript.DisableButton();
 
                     this.photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, this.chosentile.position, cardforlater.flipped);
-                    this.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, cardforlater.flipped);
+                    this.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID);
                     cardsInHand.Remove(cardforlater);
                     SortHand();
                     yield break;
@@ -492,7 +496,7 @@ public class Player : MonoBehaviourPunCallbacks
         SortHand();
 
         discardMe.transform.SetParent(Manager.instance.discard);
-        StartCoroutine(discardMe.MoveCard(new Vector2(-1600, -330), new Vector3(0, 0, 0), 0.3f));
+        StartCoroutine(discardMe.MoveCard(new Vector2(-2000, -330), new Vector3(0, 0, 0), 0.3f));
     }
 
     public void DrawCardRPC(int cardsToDraw)
@@ -543,12 +547,15 @@ public class Player : MonoBehaviourPunCallbacks
 
     public void SortHand()
     {
+        float firstCalc = Mathf.Round(canvas.transform.localScale.x * 4) / 4f;
+        float multiplier = firstCalc / 0.25f;
+
         for (int i = 0; i < cardsInHand.Count; i++)
         {
             Card nextCard = cardsInHand[i];
-            float startingX = (cardsInHand.Count >= 8) ? -900 : (cardsInHand.Count - 1) * -150;
-            float difference = (cardsInHand.Count >= 8) ? 1800f / (cardsInHand.Count - 1) : 300;
-            Vector2 newPosition = new(startingX + difference * i, -520);
+            float startingX = (cardsInHand.Count > 7) ? (-300 - (150 * multiplier)) : (cardsInHand.Count-1) * (-50 - 25 * multiplier);
+            float difference = (cardsInHand.Count > 7) ? (-300 - (150 * multiplier)) * -2 / (cardsInHand.Count-1) : 100 + (50 * multiplier);
+            Vector2 newPosition = new(startingX + difference * i, -520 * canvas.transform.localScale.x);
             StartCoroutine(nextCard.MoveCard(newPosition, nextCard.transform.localEulerAngles, 0.3f));
         }
 

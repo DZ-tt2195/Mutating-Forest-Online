@@ -4,9 +4,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using MyBox;
+using UnityEngine.UI;
 
 public class Explorer : Card, IPointerClickHandler
 {
+    [ReadOnly] public Image artwork;
     [ReadOnly] public TMP_Text cardName { get; private set; }
     [ReadOnly] public TMP_Text cardText { get; private set; }
     [ReadOnly] public TMP_Text cardArtist { get; private set; }
@@ -14,6 +16,7 @@ public class Explorer : Card, IPointerClickHandler
     private void Start()
     {
         myType = CardType.Explorer;
+        artwork = this.transform.GetChild(1).GetChild(1).GetComponent<Image>();
         cardName = this.transform.GetChild(1).GetChild(2).GetComponent<TMP_Text>();
         cardText = this.transform.GetChild(1).GetChild(3).GetComponent<TMP_Text>();
         cardArtist = this.transform.GetChild(1).GetChild(4).GetComponent<TMP_Text>();

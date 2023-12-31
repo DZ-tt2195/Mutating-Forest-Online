@@ -1,19 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
-    public Image image;
+    [SerializeField] Image blownUp;
+    [SerializeField] CanvasGroup canvasgroup;
+    [SerializeField] Image artwork;
+    [SerializeField] TMP_Text cardName;
+    [SerializeField] TMP_Text cardText;
+    [SerializeField] TMP_Text cardArtist;
 
-    public void CardArt(Path path, bool flipped)
+    public void CardArt(Path path)
     {
-        image.sprite = path.image.sprite;
-        this.transform.localEulerAngles = (flipped) ? new Vector3(0, 0, 180) : new Vector3(0, 0, 0);
+        blownUp.transform.localEulerAngles = path.transform.localEulerAngles;
+        blownUp.sprite = path.image.sprite;
+        canvasgroup.alpha = 0;
     }
     public void CardArt(Explorer explorer)
     {
-        image.sprite = explorer.image.sprite;
+        blownUp.transform.localEulerAngles = new Vector3(0, 0, 0);
+        artwork.sprite = explorer.artwork.sprite;
+        cardName.text = explorer.cardName.text;
+        cardText.text = explorer.cardText.text;
+        cardArtist.text = explorer.cardArtist.text;
+        canvasgroup.alpha = 1;
     }
 }
