@@ -185,7 +185,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
             playerordergameobject[playerposition].photonrealtime = playername;
 
             PlayerButton playerbutton = Instantiate(playerbuttonclone, GameObject.Find("Canvas").transform);
-            playerbutton.transform.localPosition = new Vector3(-1100, 425-50*playerposition, 0);
+            playerbutton.transform.localPosition = new Vector3(-1100, 425-80*playerposition, 0);
             playerbutton.name = $"{playername.NickName}'s Button";
             playerbutton.image.color = listofpawns[playerposition].image.color;
             playerbutton.Setup(listofpawns[playerposition]);

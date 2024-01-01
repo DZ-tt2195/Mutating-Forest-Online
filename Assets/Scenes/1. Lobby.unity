@@ -1531,6 +1531,7 @@ GameObject:
   - component: {fileID: 821609830}
   - component: {fileID: 821609829}
   - component: {fileID: 821609831}
+  - component: {fileID: 821609832}
   m_Layer: 0
   m_Name: CreateAndJoinRooms
   m_TagString: Untagged
@@ -1580,6 +1581,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbbc313b84884b2ab051e5a44ecfd8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &821609832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821609828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c39f3bbf5831d4bdbaaf251062de6237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1016629394

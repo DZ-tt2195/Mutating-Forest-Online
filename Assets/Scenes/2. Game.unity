@@ -398,6 +398,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &65455983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,6 +1127,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &222113077
 GameObject:
   m_ObjectHideFlags: 0
@@ -1315,6 +1317,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &229786347
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2140,6 +2143,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &295620159
 GameObject:
   m_ObjectHideFlags: 0
@@ -2496,6 +2500,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &398346964
 GameObject:
   m_ObjectHideFlags: 0
@@ -2998,7 +3003,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1100, y: 600}
+  m_AnchoredPosition: {x: -1100, y: 585}
   m_SizeDelta: {x: 330, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &527967404
@@ -3257,6 +3262,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &576722875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3703,6 +3709,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &616091278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4309,6 +4316,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &691221958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4870,6 +4878,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &794893024
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5024,6 +5033,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &847819954
 GameObject:
   m_ObjectHideFlags: 0
@@ -5238,6 +5248,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &895565476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5858,6 +5869,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &967846077
 GameObject:
   m_ObjectHideFlags: 0
@@ -6151,6 +6163,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &992228157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6305,6 +6318,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &1024145689
 GameObject:
   m_ObjectHideFlags: 0
@@ -6477,6 +6491,7 @@ GameObject:
   - component: {fileID: 1083301772}
   - component: {fileID: 1083301774}
   - component: {fileID: 1083301773}
+  - component: {fileID: 1083301775}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -6568,6 +6583,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bigCard: {fileID: 14327530}
+--- !u!114 &1083301775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083301769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c39f3bbf5831d4bdbaaf251062de6237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1088912804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7038,6 +7065,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1160836706
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7842,6 +7870,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1303605754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7996,6 +8025,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1308063213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9197,6 +9227,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1564361035
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9351,6 +9382,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1569220105
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10160,6 +10192,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &1800321839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10548,6 +10581,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &1901201286
 GameObject:
   m_ObjectHideFlags: 0
@@ -10963,6 +10997,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1 &1996956497
 GameObject:
   m_ObjectHideFlags: 0
@@ -11714,6 +11749,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1001 &2138533836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12127,6 +12163,7 @@ MonoBehaviour:
   myType: 0
   image: {fileID: 0}
   choicescript: {fileID: 0}
+  artwork: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

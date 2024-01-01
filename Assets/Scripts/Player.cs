@@ -149,14 +149,14 @@ public class Player : MonoBehaviourPunCallbacks
     {
         plays += n;
         photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-        photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
+        photonView.RPC("UpdateMyText", RpcTarget.All, cardsInHand);
     }
 
     public void AddMoves(int n)
     {
         moves += n;
         photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-        photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
+        photonView.RPC("UpdateMyText", RpcTarget.All, cardsInHand);
     }
 
     [PunRPC]
@@ -522,27 +522,23 @@ public class Player : MonoBehaviourPunCallbacks
 
             PhotonView x = Manager.instance.deck.GetChild(i).GetComponent<PhotonView>();
             cardIDs[i] = x.ViewID;
-            x.transform.SetParent(null);
         }
 
-        photonView.RPC("SendDraw", requestingplayer, cardIDs);
+        photonView.RPC("SendDraw", RpcTarget.All, cardIDs);
     }
 
     [PunRPC]
-    IEnumerator SendDraw(int[] cardIDs)
+    void SendDraw(int[] cardIDs)
     {
         for (int i = 0; i < cardIDs.Length; i++)
         {
-            yield return new WaitForSeconds(0.05f);
             Card newCard = PhotonView.Find(cardIDs[i]).GetComponent<Card>();
-
             newCard.transform.SetParent(this.hand);
             newCard.transform.localPosition = new Vector2(0, -1100);
             cardsInHand.Add(newCard);
             newCard.image.sprite = Manager.instance.cardback;
         }
         SortHand();
-        photonView.RPC("UpdateMyText", RpcTarget.All, hand.childCount);
     }
 
     public void SortHand()
@@ -555,17 +551,19 @@ public class Player : MonoBehaviourPunCallbacks
             Card nextCard = cardsInHand[i];
             float startingX = (cardsInHand.Count > 7) ? (-300 - (150 * multiplier)) : (cardsInHand.Count-1) * (-50 - 25 * multiplier);
             float difference = (cardsInHand.Count > 7) ? (-300 - (150 * multiplier)) * -2 / (cardsInHand.Count-1) : 100 + (50 * multiplier);
-            Vector2 newPosition = new(startingX + difference * i, -520 * canvas.transform.localScale.x);
+            Vector2 newPosition = new(startingX + difference * i, -515 * canvas.transform.localScale.x);
             StartCoroutine(nextCard.MoveCard(newPosition, nextCard.transform.localEulerAngles, 0.3f));
         }
 
         foreach (Card card in cardsInHand)
             StartCoroutine(card.RevealCard(0.3f));
+
+        photonView.RPC("UpdateMyText", RpcTarget.All, cardsInHand.Count);
     }
 
     #endregion
 
-#region Misc
+    #region Misc
 
     [PunRPC]
     public void EnchantressAttack()
