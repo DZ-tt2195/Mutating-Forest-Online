@@ -148,25 +148,25 @@ public class Player : MonoBehaviourPunCallbacks
     public void AddPlays(int n)
     {
         plays += n;
-        photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-        photonView.RPC("UpdateMyText", RpcTarget.All, cardsInHand);
+        pv.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
+        pv.RPC("UpdateMyText", RpcTarget.All, cardsInHand.Count);
     }
 
     public void AddMoves(int n)
     {
         moves += n;
-        photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
-        photonView.RPC("UpdateMyText", RpcTarget.All, cardsInHand);
+        pv.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
+        pv.RPC("UpdateMyText", RpcTarget.All, cardsInHand.Count);
     }
 
     [PunRPC]
-    void UpdateNumbers(int plays, int moves)
+    public void UpdateNumbers(int plays, int moves)
     {
         Manager.instance.numbers.text = $"Plays: {plays}, Moves: {moves}";
     }
 
     [PunRPC]
-    void UpdateMyText(int cardsinhand)
+    public void UpdateMyText(int cardsinhand)
     {
         playerbutton.textbox.text = $"{this.name}: {cardsinhand} Cards";
     }
@@ -218,7 +218,6 @@ public class Player : MonoBehaviourPunCallbacks
 
             plays = (enchanted) ? 1 : 2;
             moves = (enchanted) ? 1 : 2;
-            photonView.RPC("UpdateNumbers", RpcTarget.All, plays, moves);
 
             while (plays > 0 && continueturn)
             {
@@ -299,10 +298,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
             }
 
-            if (didnothing)
-                DrawCardRPC(2);
-            else
-                DrawCardRPC(1);
+            DrawCardRPC(didnothing ? 2 : 1);
 
             plays = 0;
             moves = 0;
@@ -563,7 +559,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region Misc
+#region Misc
 
     [PunRPC]
     public void EnchantressAttack()

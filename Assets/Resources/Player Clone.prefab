@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1971174412856205664}
   - component: {fileID: 1066973984474214590}
   m_Layer: 5
-  m_Name: Hand Clone
+  m_Name: Player Clone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

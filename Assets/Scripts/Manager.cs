@@ -23,6 +23,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
 
     [Foldout("UI", true)]
         [SerializeField] internal Transform cardsplayedgrid;
+        Transform storePlayers;
         Transform gameboard;
 
     [Foldout("Lists", true)]
@@ -50,6 +51,7 @@ public class Manager : MonoBehaviour, IOnEventCallback
         deck = GameObject.Find("Deck").transform;
         discard = GameObject.Find("Discard").transform;
         gameboard = GameObject.Find("Forest").transform;
+        storePlayers = GameObject.Find("Store Players").transform;
     }
 
     void Start()
@@ -112,10 +114,17 @@ public class Manager : MonoBehaviour, IOnEventCallback
             return listoftiles[(r) * 5 + (c)];
     }
 
+    void Update()
+    {
+        if (PhotonNetwork.IsMasterClient && gameon && storePlayers.transform.childCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            GameOver("A player has disconnected.");
+        }
+    }
+
     IEnumerator WaitForPlayer()
     {
-        GameObject x = GameObject.Find("Store Players");
-        while (x.transform.childCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+        while (storePlayers.transform.childCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             instructions.text = $"Waiting for more players ({PhotonNetwork.PlayerList.Length}/{PhotonNetwork.CurrentRoom.MaxPlayers})";
             yield return null;
@@ -210,22 +219,22 @@ public class Manager : MonoBehaviour, IOnEventCallback
     {
         PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
     }
-
+ 
     public void Resign()
     {
-        object[] lol = new object[1];
-        lol[0] = $"{PhotonNetwork.LocalPlayer.NickName} has resigned.";
+        object[] message = new object[1];
+        message[0] = $"{PhotonNetwork.LocalPlayer.NickName} has resigned.";
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions
         { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent(GameOverEvent, lol, raiseEventOptions, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent(GameOverEvent, message, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void YouWon(string playername)
+    public void GameOver(string endMessage)
     {
-        object[] lol = new object[1];
-        lol[0] = $"{playername} has won!";
+        object[] message = new object[1];
+        message[0] = endMessage;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions
         { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent(GameOverEvent, lol, raiseEventOptions, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent(GameOverEvent, message, raiseEventOptions, SendOptions.SendReliable);
     }
 }

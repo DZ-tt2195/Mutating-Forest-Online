@@ -55,7 +55,7 @@ public class Pawn : MonoBehaviour
         this.transform.localPosition = new Vector3(0, 0, 0);
 
         if (endtile != null && currenttile.position == endtile.position)
-            Manager.instance.YouWon(controller.name);
+            Manager.instance.GameOver($"{controller.name} has won!");
     }
 
     public void MoveOn(TileData nexttile, bool druid)
