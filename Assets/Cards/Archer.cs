@@ -23,7 +23,7 @@ public class Archer : Explorer
             Player nextplayer = Manager.instance.playerordergameobject[playertracker];
             if (nextplayer.position != player.position)
             {
-                nextplayer.pv.RPC("ArcherAttack", nextplayer.photonrealtime, player.photonrealtime);
+                this.pv.RPC("DiscardHalf", nextplayer.photonrealtime, nextplayer.position, player.position);
                 player.waiting = true;
                 while (player.waiting)
                     yield return null;
@@ -33,7 +33,7 @@ public class Archer : Explorer
     }
 
     [PunRPC]
-    public IEnumerator DiscardHalf(int thisPlayerPosition, int requestingPlayerPosition, string choice)
+    IEnumerator DiscardHalf(int thisPlayerPosition, int requestingPlayerPosition)
     {
         Player requestingPlayer = Manager.instance.playerordergameobject[requestingPlayerPosition];
         Player thisPlayer = Manager.instance.playerordergameobject[thisPlayerPosition];
@@ -45,18 +45,16 @@ public class Archer : Explorer
             foreach (Card card in thisPlayer.cardsInHand)
                 card.choicescript.EnableButton(thisPlayer);
 
-            thisPlayer.choicetext.transform.parent.gameObject.SetActive(true);
-            thisPlayer.choicetext.text = $"{this.name}: Discard a card ({i} more)";
+            Manager.instance.instructions.text = $"{this.name}: Discard a card ({i} more)";
 
-            choice = "";
+            thisPlayer.choice = "";
             thisPlayer.chosencard = null;
-            while (choice == "")
+            while (thisPlayer.choice == "")
                 yield return null;
 
             foreach (Card card in thisPlayer.cardsInHand)
                 card.choicescript.DisableButton();
 
-            thisPlayer.choicetext.transform.parent.gameObject.SetActive(false);
             thisPlayer.photonView.RPC("SendDiscard", RpcTarget.All, thisPlayer.chosencard.pv.ViewID);
             thisPlayer.photonView.RPC("UpdateMyText", RpcTarget.All, thisPlayer.cardsInHand.Count);
         }

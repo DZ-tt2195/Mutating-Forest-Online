@@ -19,42 +19,39 @@ public class Guide : Explorer
     {
         player.AddPlays(1);
         Player prevPlayer = player.GetPreviousPlayer();
+        this.pv.RPC("GuideChoice", prevPlayer.photonrealtime, prevPlayer.position, player.position);
 
-        if (prevPlayer != null)
-            prevPlayer = player;
-
-        this.pv.RPC("GuideChoice", prevPlayer.photonrealtime, player.photonrealtime);
-
-        stillResolving = true; ;
+        stillResolving = true;
         while (stillResolving)
             yield return null;
     }
 
     [PunRPC]
-    public IEnumerator GuideChoice(int prevPlayerPosition, int currPlayerPosition)
+    IEnumerator GuideChoice(int thisPlayerPosition, int requestingPlayerPosition)
     {
-        Player currPlayer = Manager.instance.playerordergameobject[currPlayerPosition];
-        Player prevPlayer = Manager.instance.playerordergameobject[prevPlayerPosition];
-        prevPlayer.pv.RPC("WaitForPlayer", RpcTarget.Others, prevPlayer.name);
+        Player requestingPlayer = Manager.instance.playerordergameobject[requestingPlayerPosition];
+        Player thisPlayer = Manager.instance.playerordergameobject[thisPlayerPosition];
+        thisPlayer.pv.RPC("WaitForPlayer", RpcTarget.Others, thisPlayer.name);
 
-        prevPlayer.choicetext.transform.parent.gameObject.SetActive(true);
-        prevPlayer.choicetext.text = $"{this.name}: Choose a bonus for {currPlayer.name}";
+        thisPlayer.choicetext.transform.parent.gameObject.SetActive(true);
+        thisPlayer.choicetext.text = $"{this.name}: Choose a bonus for {requestingPlayer.name}";
 
-        List<SendChoice> listofchoices = new List<SendChoice>{prevPlayer.CreateButton("+2 Draw"), prevPlayer.CreateButton("+2 Plays"), prevPlayer.CreateButton("+2 Moves")};
+        List<SendChoice> listofchoices = new List<SendChoice>{ thisPlayer.CreateButton("+2 Draw"), thisPlayer.CreateButton("+2 Plays"), thisPlayer.CreateButton("+2 Moves")};
 
-        prevPlayer.choice = "";
-        while (prevPlayer.choice == "")
+        thisPlayer.choice = "";
+        while (thisPlayer.choice == "")
             yield return null;
 
         for (int i = 0; i < listofchoices.Count; i++)
             Destroy(listofchoices[i].gameObject);
 
-        prevPlayer.choicetext.transform.parent.gameObject.SetActive(false);
-        this.pv.RPC("ExecuteChoice", currPlayer.photonrealtime, currPlayerPosition, prevPlayer.choice);
+        thisPlayer.choicetext.transform.parent.gameObject.SetActive(false);
+        requestingPlayer.pv.RPC("WaitDone", Manager.instance.playerorderphotonlist[requestingPlayerPosition]);
+        this.pv.RPC("ExecuteChoice", requestingPlayer.photonrealtime, requestingPlayer.position, thisPlayer.choice);
     }
 
     [PunRPC]
-    public void ExecuteChoice(int currPlayerPosition, string choice)
+    void ExecuteChoice(int currPlayerPosition, string choice)
     {
         Player currPlayer = Manager.instance.playerordergameobject[currPlayerPosition];
 
@@ -77,7 +74,7 @@ public class Guide : Explorer
     }
 
     [PunRPC]
-    public void Finished()
+    void Finished()
     {
         stillResolving = false;
     }

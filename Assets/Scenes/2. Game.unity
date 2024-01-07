@@ -2518,7 +2518,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &398346965
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5083,14 +5083,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 60
+    m_Left: 20
     m_Right: 0
-    m_Top: 125
+    m_Top: 75
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 175, y: 290}
+  m_CellSize: {x: 250, y: 410}
   m_Spacing: {x: 100, y: 20}
   m_Constraint: 1
   m_ConstraintCount: 2

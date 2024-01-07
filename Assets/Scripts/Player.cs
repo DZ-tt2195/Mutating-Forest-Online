@@ -60,7 +60,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         this.transform.SetParent(GameObject.Find("Store Players").transform);
-        this.transform.localPosition = new Vector2(0, 0);
         hand = this.transform.GetChild(0).transform;
 
         pv = GetComponent<PhotonView>();
@@ -71,6 +70,7 @@ public class Player : MonoBehaviourPunCallbacks
             choicetext = GameObject.Find("Ability Collector Text").GetComponent<TMP_Text>();
             choicetext.transform.parent.gameObject.SetActive(false);
             choicetext.transform.parent.SetParent(this.transform);
+            choicetext.transform.parent.localPosition = new Vector3(0, 270, 0);
             choicehand = choicetext.transform.parent.GetChild(2);
 
             GameObject.Find("Flip Path").GetComponent<Button>().onClick.AddListener(FlipButton);
@@ -86,6 +86,10 @@ public class Player : MonoBehaviourPunCallbacks
         pawn.SetStart(this, startingposition);
         playerbutton = GameObject.Find(buttonname).GetComponent<PlayerButton>();
         playerbutton.MoveBar();
+
+        this.transform.localPosition = new Vector2(0 + 2700 * position, 0);
+        if (pv.IsMine)
+            this.transform.parent.localPosition = new Vector2(0 + -2700 * position, 0);
     }
 
     #endregion
@@ -98,7 +102,7 @@ public class Player : MonoBehaviourPunCallbacks
         List<GameObject> list = new();
         while (Manager.instance.cardsplayedgrid.childCount > 0)
         {
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.1f);
             list.Add(Manager.instance.cardsplayedgrid.GetChild(0).gameObject);
             Manager.instance.cardsplayedgrid.GetChild(0).SetParent(null);
         }
@@ -116,11 +120,11 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void CreatePathGrid(int cardID)
+    public void CreatePathGrid(int cardID, float[] angles)
     {
         Path newpath = PhotonView.Find(cardID).GetComponent<Path>();
         CardDisplay cd = Instantiate(carddisplay, Manager.instance.cardsplayedgrid.transform);
-        cd.CardArt(newpath);
+        cd.CardArt(newpath, angles);
     }
 
     public SendChoice CreateButton(string x)
@@ -410,7 +414,7 @@ public class Player : MonoBehaviourPunCallbacks
                         tile.choicescript.DisableButton();
 
                     this.photonView.RPC("PathToForest", RpcTarget.All, cardforlater.pv.ViewID, this.chosentile.position, cardforlater.flipped);
-                    this.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID);
+                    this.photonView.RPC("CreatePathGrid", RpcTarget.All, cardforlater.pv.ViewID, new float[] {cardforlater.transform.localEulerAngles.x, cardforlater.transform.localEulerAngles.y, cardforlater.transform.localEulerAngles.z});
                     cardsInHand.Remove(cardforlater);
                     SortHand();
                     yield break;
@@ -471,6 +475,7 @@ public class Player : MonoBehaviourPunCallbacks
         try
         {
             newPath = PhotonView.Find(cardID).GetComponent<Path>();
+            newPath.FlipCard(flipped);
             cardsInHand.Remove(newPath);
             newPath.NewHome(newTile);
         }

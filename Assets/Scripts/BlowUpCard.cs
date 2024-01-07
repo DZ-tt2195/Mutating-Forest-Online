@@ -30,6 +30,6 @@ public class BlowUpCard : MonoBehaviour
     public void ChangeCard(Path path)
     {
         bigCard.transform.parent.gameObject.SetActive(true);
-        bigCard.CardArt(path);
+        bigCard.CardArt(path, new float[] {path.transform.localEulerAngles.x, path.transform.localEulerAngles.y, path.transform.localEulerAngles.z});
     }
 }
