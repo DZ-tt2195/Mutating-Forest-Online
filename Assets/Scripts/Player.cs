@@ -472,17 +472,11 @@ public class Player : MonoBehaviourPunCallbacks
         if (newTile.mypath != null)
             this.photonView.RPC("SendDiscard", RpcTarget.All, newTile.mypath.pv.ViewID);
 
-        try
-        {
-            newPath = PhotonView.Find(cardID).GetComponent<Path>();
-            newPath.FlipCard(flipped);
-            cardsInHand.Remove(newPath);
-            newPath.NewHome(newTile);
-        }
-        catch (NullReferenceException)
-        {
-            newTile.mypath = null;
-        }
+        newTile.mypath = null;
+        newPath = PhotonView.Find(cardID).GetComponent<Path>();
+        newPath.FlipCard(flipped);
+        cardsInHand.Remove(newPath);
+        newPath.NewHome(newTile);
     }
 
 #endregion

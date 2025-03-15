@@ -1,21 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.IO;
+using System;
 
 public class ConnectToLobby : MonoBehaviourPunCallbacks
 {
-    public void Start()
-    {
-        Application.targetFrameRate = 60;
-    }
-
     public void Join(string region)
     {
         PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region;
         PhotonNetwork.ConnectUsingSettings();
-        PlayerPrefs.SetString("Username", "");
+        PlayerPrefs.SetString("Online Username", "");
     }
 
     public override void OnConnectedToMaster()
